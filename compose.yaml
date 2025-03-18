@@ -1,0 +1,42 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+version: "3"
+name: dap-project2-n2
+
+services:
+  etl:
+    container_name: etl
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
+      - postgres
+
+  plotly:
+    build:
+      context: .
+      dockerfile: Dockerfile_dash
+    ports:
+      - "8050:8050"
+      
+  mongodb:
+    image: mongo
+    container_name: mongo_db
+    ports:
+      - 27018:27017
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

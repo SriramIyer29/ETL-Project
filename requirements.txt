@@ -1,0 +1,7 @@
+pandas
+dagster
+dagit
+pymongo
+pyarrow
+psycopg2
+docker

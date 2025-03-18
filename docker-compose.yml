@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - dagster_network
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dagster_network
+
+  dagster_app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Path to your Dockerfile for Dagster
+    depends_on:
+      - postgres
+    networks:
+      - dagster_network
+
+  dash_app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Path to your Dockerfile for Dash
+    depends_on:
+      - postgres
+    ports:
+      - "8050:8050"
+    networks:
+      - dagster_network
+
+networks:
+  dagster_network:
+
+volumes:
+  mongodb_data:
+  postgres_data:
